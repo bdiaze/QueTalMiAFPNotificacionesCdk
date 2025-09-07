@@ -29,6 +29,8 @@ jobs:
             ARN_PARAMETER_KAIROS_EXECUTOR_ROLE_ARN: ${{ vars.ARN_PARAMETER_KAIROS_EXECUTOR_ROLE_ARN }}
             ARN_PARAMETER_HERMES_API_URL: ${{ vars.ARN_PARAMETER_HERMES_API_URL }}
             ARN_PARAMETER_HERMES_API_KEY_ID: ${{ vars.ARN_PARAMETER_HERMES_API_KEY_ID }}
+            
+            NOTIFICATION_EMAILS: ${{ vars.NOTIFICATION_EMAILS }}
                                     
         steps:
             - name: Checkout Repositorio

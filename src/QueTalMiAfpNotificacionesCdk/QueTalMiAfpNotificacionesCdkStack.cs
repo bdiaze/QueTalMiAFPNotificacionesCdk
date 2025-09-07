@@ -1,7 +1,12 @@
 using Amazon.CDK;
+using Amazon.CDK.AWS.CloudWatch;
+using Amazon.CDK.AWS.CloudWatch.Actions;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
+using Amazon.CDK.AWS.SNS;
+using Amazon.CDK.AWS.SNS.Subscriptions;
+using Amazon.CDK.AWS.SQS;
 using Amazon.CDK.AWS.SSM;
 using Amazon.JSII.JsonModel.FileSystem;
 using Constructs;
@@ -30,6 +35,45 @@ namespace QueTalMiAfpNotificacionesCdk
             string arnParameterHermesApiUrl = System.Environment.GetEnvironmentVariable("ARN_PARAMETER_HERMES_API_URL") ?? throw new ArgumentNullException("ARN_PARAMETER_HERMES_API_URL");
             string arnParameterHermesApiKeyId = System.Environment.GetEnvironmentVariable("ARN_PARAMETER_HERMES_API_KEY_ID") ?? throw new ArgumentNullException("ARN_PARAMETER_HERMES_API_KEY_ID");
 
+            string notificationEmails = System.Environment.GetEnvironmentVariable("NOTIFICATION_EMAILS") ?? throw new ArgumentNullException("NOTIFICATION_EMAILS");
+
+            #region SNS Topic
+            // Se crea SNS topic para notificaciones...
+            Topic topic = new(this, $"{appName}NotificacionesSNSTopic", new TopicProps {
+                TopicName = $"{appName}NotificacionesSNSTopic",
+            });
+
+            foreach (string email in notificationEmails.Split(",")) {
+                topic.AddSubscription(new EmailSubscription(email));
+            }
+            #endregion
+
+            #region DLQ y Alarms
+            // Creación de cola...
+            Queue dlq = new(this, $"{appName}NotificacionesDeadLetterQueue", new QueueProps {
+                QueueName = $"{appName}NotificacionesDeadLetterQueue",
+                RetentionPeriod = Duration.Days(14),
+                EnforceSSL = true,
+            });
+
+            // Se crea alarma para enviar notificación cuando llegue un elemento al DLQ...
+            Alarm alarm = new(this, $"{appName}NotificacionesDeadLetterQueueAlarm", new AlarmProps {
+                AlarmName = $"{appName}NotificacionesDeadLetterQueueAlarm",
+                AlarmDescription = $"Alarma para notificar cuando llega algun elemento a la DLQ de Notificaciones {appName}",
+                Metric = dlq.MetricApproximateNumberOfMessagesVisible(new MetricOptions {
+                    Period = Duration.Minutes(5),
+                    Statistic = Stats.MAXIMUM,
+                }),
+                Threshold = 1,
+                EvaluationPeriods = 1,
+                DatapointsToAlarm = 1,
+                ComparisonOperator = ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+                TreatMissingData = TreatMissingData.NOT_BREACHING,
+            });
+            alarm.AddAlarmAction(new SnsAction(topic));
+            #endregion
+
+            #region Log Group y Role
             // Creación de log group lambda...
             LogGroup lambdaLogGroup = new(this, $"{appName}NotificacionesLogGroup", new LogGroupProps {
                 LogGroupName = $"/aws/lambda/{appName}Notificaciones/logs",
@@ -39,7 +83,6 @@ namespace QueTalMiAfpNotificacionesCdk
             // Se obtiene ID de API Keys...
             IStringParameter strParHermesApiKeyId = StringParameter.FromStringParameterArn(this, $"{appName}StringParameterHermesApiKeyId", arnParameterHermesApiKeyId);
             IStringParameter strPaApiKeyId = StringParameter.FromStringParameterArn(this, $"{appName}StringParameterApiKeyId", arnParameterApiKeyId);
-
 
             // Creación de role para la función lambda...
             Role roleLambda = new(this, $"{appName}NotificacionesLambdaRole", new RoleProps {
@@ -83,7 +126,9 @@ namespace QueTalMiAfpNotificacionesCdk
                     }
                 }
             });
+            #endregion
 
+            #region Lambda
             // Creación de la función lambda...
             Function function = new(this, $"{appName}NotificacionesLambdaFunction", new FunctionProps {
                 FunctionName = $"{appName}NotificacionesLambdaFunction",
@@ -104,12 +149,15 @@ namespace QueTalMiAfpNotificacionesCdk
                     { "ARN_PARAMETER_DIRECCION_DE_DEFECTO", arnParameterDireccionDeDefecto },
                 },
                 Role = roleLambda,
+                DeadLetterQueueEnabled = true,
+                DeadLetterQueue = dlq
             });
+            #endregion
 
+            #region Role de Ejecución
             // Se obtienen parámetros de Kairos...
             IStringParameter strParKairosExecutorPrefixRole = StringParameter.FromStringParameterArn(this, $"{appName}StringParameterKairosExecutorPrefixRole", arnParameterKairosExecutorPrefixRole);
             IStringParameter strParKairosExecutorRoleArn = StringParameter.FromStringParameterArn(this, $"{appName}StringParameterKairosExecutorRoleArn", arnParameterKairosExecutorRoleArn);
-
 
             // Creación del Role de Ejecución...
             Role ejecucionRole = new(this, $"{appName}EjecucionNotificacionesLambdaRole", new RoleProps {
@@ -135,7 +183,9 @@ namespace QueTalMiAfpNotificacionesCdk
                     }
                 }
             });
+            #endregion
 
+            #region Parameter Store
             // Creación de los string parameters...
             _ = new StringParameter(this, $"{appName}StringParameterLambdaArn", new StringParameterProps {
                 ParameterName = $"/{appName}/Notificaciones/LambdaArn",
@@ -150,6 +200,7 @@ namespace QueTalMiAfpNotificacionesCdk
                 StringValue = ejecucionRole.RoleArn,
                 Tier = ParameterTier.STANDARD,
             });
+            #endregion
         }
     }
 }
