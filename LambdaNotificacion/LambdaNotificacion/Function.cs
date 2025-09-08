@@ -50,7 +50,7 @@ public class Function
 
         LambdaLogger.Log(
             $"[Function] - [FunctionHandler] - " +
-            $"Se inicia proceso de envío de notificaciones.");
+            $"Se inicia proceso de envio de notificaciones.");
 
         VariableEntornoHelper variableEntorno = serviceProvider.GetRequiredService<VariableEntornoHelper>();
         // ParameterStoreHelper parameterStore = serviceProvider.GetRequiredService<ParameterStoreHelper>();
@@ -59,7 +59,7 @@ public class Function
 
         LambdaLogger.Log(
             $"[Function] - [FunctionHandler] - [{stopwatch.ElapsedMilliseconds} ms] - " +
-            $"Se obtendran los parametros necesarios para el envío de notificaciones.");
+            $"Se obtendran los parametros necesarios para el envio de notificaciones.");
 
         string appName = variableEntorno.Obtener("APP_NAME");
 

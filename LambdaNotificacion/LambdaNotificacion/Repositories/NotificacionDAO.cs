@@ -24,6 +24,10 @@ namespace LambdaNotificacion.Repositories {
             using HttpClient client = new(new RetryHandler(new HttpClientHandler()));
             client.DefaultRequestHeaders.Add("x-api-key", _xApiKey);
             HttpResponseMessage response = await client.GetAsync(requestUri);
+            if (!response.IsSuccessStatusCode) {
+                throw new Exception($"Ocurrió un error al obtener las notificaciones por tipo. StatusCode: {response.StatusCode} - ReasonPhrase: {response.ReasonPhrase}");
+            }
+
             return JsonConvert.DeserializeObject<List<Notificacion>>(await response.Content.ReadAsStringAsync())!;
         }
         
