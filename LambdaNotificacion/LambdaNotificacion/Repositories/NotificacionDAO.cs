@@ -19,13 +19,13 @@ namespace LambdaNotificacion.Repositories {
                 { "idTipoNotificacion",  idTipoNotificacion.ToString() },
                 { "habilitado", "1" }
             };
-            string requestUri = QueryHelpers.AddQueryString(_baseUrl + "Correo/Enviar", parameters);
+            string requestUri = QueryHelpers.AddQueryString(_baseUrl + "Notificacion/ObtenerPorTipoNotificacion", parameters);
 
             using HttpClient client = new(new RetryHandler(new HttpClientHandler()));
             client.DefaultRequestHeaders.Add("x-api-key", _xApiKey);
             HttpResponseMessage response = await client.GetAsync(requestUri);
             if (!response.IsSuccessStatusCode) {
-                throw new Exception($"Ocurrió un error al obtener las notificaciones por tipo. StatusCode: {response.StatusCode} - ReasonPhrase: {response.ReasonPhrase}");
+                throw new Exception($"Ocurrió un error al obtener las notificaciones por tipo. StatusCode: {response.StatusCode} - Content: {await response.Content.ReadAsStringAsync()}");
             }
 
             return JsonConvert.DeserializeObject<List<Notificacion>>(await response.Content.ReadAsStringAsync())!;
