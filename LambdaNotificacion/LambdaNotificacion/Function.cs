@@ -44,12 +44,8 @@ public class Function
         serviceProvider = app.Services;
     }
 
-    public async Task FunctionHandler(JObject input, ILambdaContext context)
+    public async Task FunctionHandler(EntradaLambda input, ILambdaContext context)
     {
-        if (input["IdTipoNotificacion"] == null) {
-            throw new Exception("No se recibió el ID del tipo de notificación que se debe procesar.");
-        }
-
         Stopwatch stopwatch = Stopwatch.StartNew();
 
         LambdaLogger.Log(
@@ -70,7 +66,7 @@ public class Function
         LambdaLogger.Log(
             $"[Function] - [FunctionHandler] - [{stopwatch.ElapsedMilliseconds} ms] - " +
             $"Se obtendran las notificaciones a procesar.");
-        List<Notificacion> notificaciones = await notificacionDAO.ObtenerNotificacionesPorTipo(input.Value<short>("IdTipoNotificacion"));
+        List<Notificacion> notificaciones = await notificacionDAO.ObtenerNotificacionesPorTipo(input.IdTipoNotificacion);
 
         LambdaLogger.Log(
             $"[Function] - [FunctionHandler] - [{stopwatch.ElapsedMilliseconds} ms] - " +
