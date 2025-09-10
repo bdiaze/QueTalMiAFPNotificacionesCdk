@@ -6,6 +6,16 @@ using System.Threading.Tasks;
 
 namespace LambdaNotificacion.TemplateModels {
     public class ResumenSemanalModel {
+        public Dictionary<string, string> UrlImagenes { get; } = new Dictionary<string, string> {
+            { "CAPITAL", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPCapital.svg" },
+            { "CUPRUM", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPCuprum.svg" },
+            { "HABITAT", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPHabitat.svg" },
+            { "MODELO", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPModelo.svg" },
+            { "PLANVITAL", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPPlanvital.svg" },
+            { "PROVIDA", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPProvida.png" },
+            { "UNO", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPUno.png" },
+        };
+
         public DateTime? FechaDesde { get; set; }
         
         public DateTime? FechaHasta { get; set; }
@@ -25,49 +35,49 @@ namespace LambdaNotificacion.TemplateModels {
         };
 
         public SortedDictionary<string, SortedDictionary<string, decimal?>> ValorCuotaFinal { get; set; } = new SortedDictionary<string, SortedDictionary<string, decimal?>> {
-            { "Capital", new SortedDictionary<string, decimal?> {
+            { "CAPITAL", new SortedDictionary<string, decimal?> {
                 { "A",  null },
                 { "B",  null },
                 { "C",  null },
                 { "D",  null },
                 { "E",  null }
             } },
-            { "Cuprum", new SortedDictionary<string, decimal?> {
+            { "CUPRUM", new SortedDictionary<string, decimal?> {
                 { "A",  null },
                 { "B",  null },
                 { "C",  null },
                 { "D",  null },
                 { "E",  null }
             } },
-            { "Habitat", new SortedDictionary<string, decimal?> {
+            { "HABITAT", new SortedDictionary<string, decimal?> {
                 { "A",  null },
                 { "B",  null },
                 { "C",  null },
                 { "D",  null },
                 { "E",  null }
             } },
-            { "Modelo", new SortedDictionary<string, decimal?> {
+            { "MODELO", new SortedDictionary<string, decimal?> {
                 { "A",  null },
                 { "B",  null },
                 { "C",  null },
                 { "D",  null },
                 { "E",  null }
             } },
-            { "PlanVital", new SortedDictionary<string, decimal?> {
+            { "PLANVITAL", new SortedDictionary<string, decimal?> {
                 { "A",  null },
                 { "B",  null },
                 { "C",  null },
                 { "D",  null },
                 { "E",  null }
             } },
-            { "ProVida", new SortedDictionary<string, decimal?> {
+            { "PROVIDA", new SortedDictionary<string, decimal?> {
                 { "A",  null },
                 { "B",  null },
                 { "C",  null },
                 { "D",  null },
                 { "E",  null }
             } },
-            { "Uno", new SortedDictionary<string, decimal?> {
+            { "UNO", new SortedDictionary<string, decimal?> {
                 { "A",  null },
                 { "B",  null },
                 { "C",  null },

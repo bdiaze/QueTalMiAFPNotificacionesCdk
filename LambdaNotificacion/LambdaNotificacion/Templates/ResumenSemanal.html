@@ -7,64 +7,128 @@
         <div style='font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"; font-size: 16px; font-weight: 400; line-height: 1.5; text-align: left; color: #212529 !important; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; box-sizing: border-box; text-align: center;'>
             <a href="https://www.quetalmiafp.cl/" style="color: rgba(0,0,0,.9); word-break: break-word; white-space: normal; text-align: center; display: inline-block; padding-top: 5px; padding-bottom: 5px; margin-top: 8px; font-size: 20px; line-height: inherit; text-decoration: none; background-color: transparent; width: 100%; ">
                 <img src="https://www.quetalmiafp.cl/images/logo.png" width="25" style="margin-right: 8px !important;" />
-                <h1 style="margin-top: 8px; margin-bottom: 8px; font-weight: 500; line-height: 1.2; font-size: 1.1rem; display: inline; vertical-align: top; color: #212529 !important;">¿Qué tal mi AFP?</h1>
+                <h1 style="margin-top: 8px; margin-bottom: 8px; font-weight: 400; line-height: 1.2; font-size: 1.1rem; display: inline; vertical-align: top; color: #6c757d !important;">¿Qué tal mi AFP?</h1>
             </a>
             <h1 style="margin: 0px; font-size: 2rem;">Resumen Semanal</h1>
-            <h3 style="margin: 0px; font-size: 0.75rem; font-weight: 400;">Del {{ FechaDesde | date.to_string "%e de %b"}} al {{ FechaHasta | date.to_string "%e de %b" }}</h3>
+            <h3 style="margin: 0px; font-size: 0.8rem; font-weight: 400; color: #6c757d !important;">Del {{ fecha_desde | date.to_string "%e de %b"}} al {{ fecha_hasta | date.to_string "%e de %b" }}</h3>
 
-            <h2>¡Premio a la AFP más rentable de la semana!</h2>
-            <p style="margin: 0px; font-size: 1.6rem; font-weight: 500;">AFP {{ PremioRentabilidad["AFP"] }}</p>
-            <p style="margin: 0px; font-size: 1.4rem; font-weight: 500;">Fondo {{ PremioRentabilidad["Fondo"] }}</p>
+            <h2><u>¡Premio a la AFP más rentable de la semana!</u></h2>
+            <img style="width:12rem;{{ premio_rentabilidad["AFP"] == "PLANVITAL" ? "height:5rem;" : "" }}" src="{{url_imagenes[premio_rentabilidad["AFP"]]}}" alt="AFP {{ premio_rentabilidad["AFP"] }}"/>
+            <p style="margin: 0px; font-size: 1.7rem; font-weight: 500; color: #6c757d !important;">Fondo {{ premio_rentabilidad["Fondo"] }}</p>
             <div>
-                <p style="display: inline; font-size: 0.85rem;">Rentabilidad: </p>
-                <p style="display: inline; font-size: 1.2rem; font-weight: 500;">{{ PremioRentabilidad["Rentabilidad"] | math.format "N2" }}%</p>
+                <p style="display: inline; font-size: 0.9rem; color: #6c757d !important;">Rentabilidad: </p>
+                <p style="display: inline; font-size: 1.6rem; font-weight: 500; {{ premio_rentabilidad["Rentabilidad"] > 0 ? "color: #28a745;" : premio_rentabilidad["Rentabilidad"] < 0 ? "color: #dc3545;" : "color: #dee2e6;" }}">
+                    {{ premio_rentabilidad["Rentabilidad"] > 0 ? "⇧" : premio_rentabilidad["Rentabilidad"] < 0 ? "⇩" : "" }}
+                    {{ premio_rentabilidad["Rentabilidad"] | math.format "N2" }}%
+                </p>
             </div>
 
-            <h2>Rentabilidad Promedio Semanal <sup>1</sup></h2>
+            <h2><u>Rentabilidad Promedio Semanal</u><sup> 1</sup></h2>
             <div style="width: 100%; overflow-x: auto;">
-                <table style="margin: 0px auto; border: 1px solid black; border-collapse: collapse;">
+                <table style="margin: 0px auto; border-spacing: 0; border-radius: 12px;">
                     <tr>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">A</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">B</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">C</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">D</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">E</th>
+                        <th style="border: 1px solid #c23b33; padding: 8px 16px; color: #c23b33; border-top-left-radius: 12px;">A</th>
+                        <th style="border: 1px solid #ffc107; border-left: 0; padding: 8px 16px; color: #ffc107;">B</th>
+                        <th style="border: 1px solid #28a745; border-left: 0; padding: 8px 16px; color: #28a745;">C</th>
+                        <th style="border: 1px solid #17a2b8; border-left: 0; padding: 8px 16px; color: #17a2b8;">D</th>
+                        <th style="border: 1px solid #007bff; border-left: 0; padding: 8px 16px; color: #007bff; border-top-right-radius: 12px; ">E</th>
                     </tr>
                     <tr>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["A"] | math.format "N4" }}%</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["B"] | math.format "N4" }}%</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["C"] | math.format "N4" }}%</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["D"] | math.format "N4" }}%</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["E"] | math.format "N4" }}%</td>
+                        <td style="border: 1px solid #dee2e6; border-top: 0; padding: 8px 16px; border-bottom-left-radius: 12px; color: #6c757d;">
+                            {{ rentabilidad_semanal["A"] > 0 ? "⇧" : rentabilidad_semanal["A"] < 0 ? "⇩" : "" }}
+                            {{ rentabilidad_semanal["A"] | math.format "N4" }}%
+                        </td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">
+                            {{ rentabilidad_semanal["B"] > 0 ? "⇧" : rentabilidad_semanal["B"] < 0 ? "⇩" : "" }}
+                            {{ rentabilidad_semanal["B"] | math.format "N4" }}%
+                        </td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">
+                            {{ rentabilidad_semanal["C"] > 0 ? "⇧" : rentabilidad_semanal["C"] < 0 ? "⇩" : "" }}
+                            {{ rentabilidad_semanal["C"] | math.format "N4" }}%
+                        </td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">
+                            {{ rentabilidad_semanal["D"] > 0 ? "⇧" : rentabilidad_semanal["D"] < 0 ? "⇩" : "" }}
+                            {{ rentabilidad_semanal["D"] | math.format "N4" }}%
+                        </td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; border-bottom-right-radius: 12px; color: #6c757d;">
+                            {{ rentabilidad_semanal["E"] > 0 ? "⇧" : rentabilidad_semanal["E"] < 0 ? "⇩" : "" }}
+                            {{ rentabilidad_semanal["E"] | math.format "N4" }}%
+                        </td>
                     </tr>
                 </table>
             </div>
-            <p style="font-size: 0.7rem; margin: 8px 0px;"><sup>1</sup> Promedio calculado con la rentabilidad obtenida por todas las AFP, desde el {{ FechaDesde | date.to_string "%e de %B"}} al {{ FechaHasta | date.to_string "%e de %B" }}.</p>
+            <p style="font-size: 0.7rem; margin: 8px 0px; color: #6c757d !important;"><sup>1</sup> Promedio calculado con la rentabilidad obtenida por todas las AFP, desde el {{ fecha_desde | date.to_string "%e de %B"}} al {{ fecha_hasta | date.to_string "%e de %B" }}.</p>
 
-            <h2>Valores Cuotas Finales <sup>2</sup></h2>
+            <h2><u>Valores Cuotas Finales</u><sup> 2</sup></h2>
             <div style="width: 100%; overflow-x: auto;">
-                <table style="margin: 0px auto; border: 1px solid black; border-collapse: collapse;">
+                <table style="margin: 0px auto; border-spacing: 0; border-radius: 12px; ">
                     <tr>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;"></th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">A</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">B</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">C</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">D</th>
-                        <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">E</th>
+                        <th style="padding: 8px 16px;"></th>
+                        <th style="border: 1px solid #c23b33; padding: 8px 16px; color: #c23b33; border-top-left-radius: 12px;">A</th>
+                        <th style="border: 1px solid #ffc107; border-left: 0; padding: 8px 16px; color: #ffc107; ">B</th>
+                        <th style="border: 1px solid #28a745; border-left: 0; padding: 8px 16px; color: #28a745; ">C</th>
+                        <th style="border: 1px solid #17a2b8; border-left: 0; padding: 8px 16px; color: #17a2b8; ">D</th>
+                        <th style="border: 1px solid #007bff; border-left: 0; padding: 8px 16px; color: #007bff; border-top-right-radius: 12px; ">E</th>
                     </tr>
-                    {{ for afp in ValorCuotaFinal }}
                     <tr>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">AFP {{ afp.key }}</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["A"] | math.format "N2" }}</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["B"] | math.format "N2" }}</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["C"] | math.format "N2" }}</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["D"] | math.format "N2" }}</td>
-                        <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["E"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; padding: 8px 16px; color: #6c757d; border-top-left-radius: 12px;">AFP Capital</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CAPITAL"]["A"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CAPITAL"]["B"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CAPITAL"]["C"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CAPITAL"]["D"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CAPITAL"]["E"] | math.format "N2" }}</td>
                     </tr>
-                    {{ end }}
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; border-top: 0; padding: 8px 16px; color: #6c757d;">AFP Cuprum</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CUPRUM"]["A"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CUPRUM"]["B"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CUPRUM"]["C"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CUPRUM"]["D"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["CUPRUM"]["E"] | math.format "N2" }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; border-top: 0; padding: 8px 16px; color: #6c757d;">AFP Habitat</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["HABITAT"]["A"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["HABITAT"]["B"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["HABITAT"]["C"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["HABITAT"]["D"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["HABITAT"]["E"] | math.format "N2" }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; border-top: 0; padding: 8px 16px; color: #6c757d;">AFP Modelo</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["MODELO"]["A"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["MODELO"]["B"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["MODELO"]["C"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["MODELO"]["D"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["MODELO"]["E"] | math.format "N2" }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; border-top: 0; padding: 8px 16px; color: #6c757d;">AFP PlanVital</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PLANVITAL"]["A"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PLANVITAL"]["B"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PLANVITAL"]["C"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PLANVITAL"]["D"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PLANVITAL"]["E"] | math.format "N2" }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; border-top: 0; padding: 8px 16px; color: #6c757d;">AFP ProVida</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PROVIDA"]["A"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PROVIDA"]["B"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PROVIDA"]["C"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PROVIDA"]["D"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["PROVIDA"]["E"] | math.format "N2" }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #dee2e6; border-top: 0; padding: 8px 16px; color: #6c757d; border-bottom-left-radius: 12px;">AFP Uno</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["UNO"]["A"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["UNO"]["B"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["UNO"]["C"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d;">{{ valor_cuota_final["UNO"]["D"] | math.format "N2" }}</td>
+                        <td style="border: 1px solid #dee2e6; border-left: 0; border-top: 0; padding: 8px 16px; color: #6c757d; border-bottom-right-radius: 12px;">{{ valor_cuota_final["UNO"]["E"] | math.format "N2" }}</td>
+                    </tr>
                 </table>
             </div>
-            <p style="font-size: 0.7rem; margin: 8px 0px;"><sup>2</sup> Corresponden a los valores cuota del {{ FechaHasta | date.to_string "%d de %B de %Y" }}.</p>
+            <p style="font-size: 0.7rem; margin: 8px 0px; color: #6c757d !important;"><sup>2</sup> Corresponden a los valores cuota del {{ fecha_hasta | date.to_string "%d de %B de %Y" }}.</p>
         </div>
     </body>
 </html>

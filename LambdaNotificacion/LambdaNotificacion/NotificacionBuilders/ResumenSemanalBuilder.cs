@@ -25,19 +25,23 @@ namespace LambdaNotificacion.NotificacionBuilders {
             } else {
                 strTemplate = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "Templates", "ResumenSemanal.html"));
             }
+            CultureInfo cultureInfo = new("es-CL");
             Template template = Template.Parse(strTemplate);
             TemplateContext context = new();
-            context.PushCulture(new CultureInfo("es-CL"));
+            context.PushCulture(cultureInfo);
 
             ResumenSemanalModel model = new() {
                 FechaHasta = await cuotaUfComisionDAO.UltimaFechaTodas()
             };
-            model.FechaDesde = model.FechaHasta.Value.AddDays(-7);
+            // Se modifica FechaHasta para que coincida con un domingo...
+            model.FechaHasta = model.FechaHasta.Value.AddDays(-1 * (short)model.FechaHasta.Value.DayOfWeek);
+
+            model.FechaDesde = model.FechaHasta.Value.AddDays(-6);
 
             List<SalObtenerUltimaCuota> valoresCuotaIniciales = await cuotaUfComisionDAO.ObtenerUltimaCuota(
                 AFP,
                 FONDO,
-                model.FechaDesde.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                model.FechaDesde.Value.AddDays(-1).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                 1
             );
             List<SalObtenerUltimaCuota> valoresCuotaFinales = await cuotaUfComisionDAO.ObtenerUltimaCuota(
@@ -68,16 +72,16 @@ namespace LambdaNotificacion.NotificacionBuilders {
 
             foreach (string afp in model.ValorCuotaFinal.Keys.ToArray()) {
                 foreach (string fondo in model.ValorCuotaFinal[afp].Keys.ToArray()) {
-                    model.ValorCuotaFinal[afp][fondo] = valoresCuotaFinales.FirstOrDefault(c => c.Afp == afp.ToUpper() && c.Fondo == fondo)?.Valor;
+                    model.ValorCuotaFinal[afp][fondo] = valoresCuotaFinales.FirstOrDefault(c => c.Afp == afp && c.Fondo == fondo)?.Valor;
                 }
             }
 
             ScriptObject scriptObject = [];
-            scriptObject.Import(model, renamer: member => member.Name);
+            scriptObject.Import(model);
             context.PushGlobal(scriptObject);
 
             return new InformacionNotificacion() { 
-                Asunto = "¡Ha llegado tu resumen semanal! - ¿Qué tal mi AFP?",
+                Asunto = $"¡Ha llegado tu resumen semanal! - Semana del {model.FechaDesde.Value.ToString("d 'de' MMMM", cultureInfo)}.",
                 Cuerpo = template.Render(context),
             };
         }
