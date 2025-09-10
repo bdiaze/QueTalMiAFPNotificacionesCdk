@@ -131,7 +131,7 @@ namespace QueTalMiAfpNotificacionesCdk
             #region Lambda
             // Creación de la función lambda...
             Function function = new(this, $"{appName}NotificacionesLambdaFunction", new FunctionProps {
-                FunctionName = $"{appName}NotificacionesLambdaFunction",
+                FunctionName = $"{appName}Notificaciones",
                 Description = $"Lambda encargada de enviar las notificaciones de la aplicacion {appName}",
                 Runtime = Runtime.DOTNET_8,
                 Handler = notificacionLambdaHandler,
