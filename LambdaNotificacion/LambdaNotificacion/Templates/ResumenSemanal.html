@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div style='font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"; font-size: 16px; font-weight: 400; line-height: 1.5; text-align: left; color: #212529 !important; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; box-sizing: border-box; text-align: center;'>
+            <h1>¿Qué tal mi AFP?</h1>
+            <h2>Resumen Semanal</h2>
+            <h3>Del {{ FechaDesde | date.to_string "%e de %b"}} al {{ FechaHasta | date.to_string "%e de %b" }}</h3>
+
+            <h2>¡Premio a la AFP más rentable de la semana!</h2>
+            <p>AFP {{ PremioRentabilidad["AFP"] }}</p>
+            <p>Fondo {{ PremioRentabilidad["Fondo"] }}</p>
+            <div>
+                <p style="display: inline;">Rentabilidad: </p>
+                <p style="display: inline;">{{ PremioRentabilidad["Rentabilidad"] | math.format "N2" }}%</p>
+            </div>
+
+            <h2>Rentabilidad Promedio Semanal <sup>1</sup></h2>
+            <table style="margin: 0px auto; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">A</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">B</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">C</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">D</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">E</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["A"] | math.format "N4" }}%</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["B"] | math.format "N4" }}%</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["C"] | math.format "N4" }}%</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["D"] | math.format "N4" }}%</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ RentabilidadSemanal["E"] | math.format "N4" }}%</td>
+                </tr>
+            </table>
+            <p><sup>1</sup> Promedio calculado con la rentabilidad obtenida por todas las AFP, desde el {{ FechaDesde | date.to_string "%e de %B"}} al {{ FechaHasta | date.to_string "%e de %B" }}.</p>
+
+            <h2>Valores Cuotas Finales <sup>2</sup></h2>
+            <table style="margin: 0px auto; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;"></th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">A</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">B</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">C</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">D</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">E</th>
+                </tr>
+                {{ for afp in ValorCuotaFinal }}
+                <tr>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">AFP {{ afp.key }}</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["A"] | math.format "N2" }}</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["B"] | math.format "N2" }}</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["C"] | math.format "N2" }}</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["D"] | math.format "N2" }}</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 8px 16px;">{{ afp.value["E"] | math.format "N2" }}</td>
+                </tr>
+                {{ end }}
+            </table>
+            <p><sup>2</sup> Corresponden a los valores cuota del {{ FechaHasta | date.to_string "%d de %B de %Y" }}.</p>
+        </div>
+    </body>
+</html>

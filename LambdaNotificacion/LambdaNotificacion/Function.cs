@@ -32,10 +32,12 @@ public class Function
             services.AddSingleton<ParameterStoreHelper>();
             services.AddSingleton<ApiKeyHelper>();
             services.AddSingleton<HermesHelper>();
+            services.AddSingleton<NotificacionBuilderHelper>();
             #endregion
 
             #region Singleton Repositories
             services.AddSingleton<NotificacionDAO>();
+            services.AddSingleton<CuotaUfComisionDAO>();
             #endregion
         });
 
@@ -53,8 +55,8 @@ public class Function
             $"Se inicia proceso de envio de notificaciones.");
 
         VariableEntornoHelper variableEntorno = serviceProvider.GetRequiredService<VariableEntornoHelper>();
-        // ParameterStoreHelper parameterStore = serviceProvider.GetRequiredService<ParameterStoreHelper>();
         HermesHelper hermesHelper = serviceProvider.GetRequiredService<HermesHelper>();
+        NotificacionBuilderHelper notificacionBuilder = serviceProvider.GetRequiredService<NotificacionBuilderHelper>();
         NotificacionDAO notificacionDAO = serviceProvider.GetRequiredService<NotificacionDAO>();
 
         LambdaLogger.Log(
@@ -70,23 +72,34 @@ public class Function
 
         LambdaLogger.Log(
             $"[Function] - [FunctionHandler] - [{stopwatch.ElapsedMilliseconds} ms] - " +
-            $"Comenzando a procesar las {notificaciones.Count} notificaciones.");
+            $"Hay que procesar {notificaciones.Count} notificaciones, se comienza a armar el asunto y cuerpo del correo.");
 
+        InformacionNotificacion info = await notificacionBuilder.GenerarInformacion(input.IdTipoNotificacion);
+
+        LambdaLogger.Log(
+            $"[Function] - [FunctionHandler] - [{stopwatch.ElapsedMilliseconds} ms] - " +
+            $"Se construye exitosamente el asunto y cuerpo de la notificación, iniciando con los envíos.");
+
+        int casosError = 0;
         foreach (Notificacion notificacion in notificaciones) {
             try {
-
                 await hermesHelper.EnviarCorreo(new HermesCorreo {
                     Para = [ 
                         new DireccionCorreo { 
                             Correo = notificacion.CorreoNotificacion
                         } 
                     ],
-                    Asunto = $"Asunto de ejemplo desde notificaciones {appName}",
-                    Cuerpo = "Cuerpo de ejemplo"
+                    Asunto = info.Asunto,
+                    Cuerpo = info.Cuerpo
                 });
             } catch(Exception ex) {
+                casosError++;
                 LambdaLogger.Log(LogLevel.Error, $"Ocurrió un error al procesar la notificación ID {notificacion.Id}. {ex}");
             }
         }
+
+        LambdaLogger.Log(
+            $"[Function] - [FunctionHandler] - [{stopwatch.ElapsedMilliseconds} ms] - " +
+            $"Se terminan de encolar exitosamente las notificaciones. Casos con error: {casosError}.");
     }
 }
