@@ -82,7 +82,7 @@ namespace QueTalMiAfpNotificacionesCdk
 
             // Se obtiene ID de API Keys...
             IStringParameter strParHermesApiKeyId = StringParameter.FromStringParameterArn(this, $"{appName}StringParameterHermesApiKeyId", arnParameterHermesApiKeyId);
-            IStringParameter strPaApiKeyId = StringParameter.FromStringParameterArn(this, $"{appName}StringParameterApiKeyId2", arnParameterApiKeyId);
+            IStringParameter strPaApiKeyId = StringParameter.FromStringParameterArn(this, $"{appName}StringParameterApiKeyId", arnParameterApiKeyId);
 
             // Creación de role para la función lambda...
             Role roleLambda = new(this, $"{appName}NotificacionesLambdaRole", new RoleProps {
