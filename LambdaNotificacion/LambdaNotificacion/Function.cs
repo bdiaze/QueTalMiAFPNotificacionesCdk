@@ -78,7 +78,7 @@ public class Function
 
         LambdaLogger.Log(
             $"[Function] - [FunctionHandler] - [{stopwatch.ElapsedMilliseconds} ms] - " +
-            $"Se construye exitosamente el asunto y cuerpo de la notificación, iniciando con los envíos.");
+            $"Se construye exitosamente el asunto y cuerpo de la notificacion, iniciando con los envios.");
 
         int casosError = 0;
         foreach (Notificacion notificacion in notificaciones) {
@@ -100,7 +100,7 @@ public class Function
                 });
             } catch(Exception ex) {
                 casosError++;
-                LambdaLogger.Log(LogLevel.Error, $"Ocurrió un error al procesar la notificación ID {notificacion.Id}. {ex}");
+                LambdaLogger.Log(LogLevel.Error, $"Ocurrio un error al procesar la notificacion ID {notificacion.Id}. {ex}");
 
                 try {
                     await notificacionDAO.IngresarHistorialNotificacion(new EntIngresarHistorialNotificacion() {
@@ -109,7 +109,7 @@ public class Function
                         FechaNotificacion = DateTimeOffset.Now,
                     });
                 } catch (Exception exNotif) {
-                    LambdaLogger.Log(LogLevel.Error, $"Ocurrió un error al registrar el historial de notificación - ID Notificacion: {notificacion.Id}. {exNotif}");
+                    LambdaLogger.Log(LogLevel.Error, $"Ocurrio un error al registrar el historial de notificacion - ID Notificacion: {notificacion.Id}. {exNotif}");
                 }
             }
         }
