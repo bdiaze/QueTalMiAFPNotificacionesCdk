@@ -92,9 +92,25 @@ public class Function
                     Asunto = info.Asunto,
                     Cuerpo = info.Cuerpo
                 });
+
+                await notificacionDAO.IngresarHistorialNotificacion(new EntIngresarHistorialNotificacion() { 
+                    IdNotificacion = notificacion.Id,
+                    Estado = 1 /* Ok */,
+                    FechaNotificacion = DateTimeOffset.Now,
+                });
             } catch(Exception ex) {
                 casosError++;
                 LambdaLogger.Log(LogLevel.Error, $"Ocurrió un error al procesar la notificación ID {notificacion.Id}. {ex}");
+
+                try {
+                    await notificacionDAO.IngresarHistorialNotificacion(new EntIngresarHistorialNotificacion() {
+                        IdNotificacion = notificacion.Id,
+                        Estado = 2 /* Error */,
+                        FechaNotificacion = DateTimeOffset.Now,
+                    });
+                } catch (Exception exNotif) {
+                    LambdaLogger.Log(LogLevel.Error, $"Ocurrió un error al registrar el historial de notificación - ID Notificacion: {notificacion.Id}. {exNotif}");
+                }
             }
         }
 
