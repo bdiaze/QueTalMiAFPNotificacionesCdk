@@ -77,6 +77,7 @@ namespace QueTalMiAfpNotificacionesCdk
             // Creación de log group lambda...
             LogGroup lambdaLogGroup = new(this, $"{appName}NotificacionesLogGroup", new LogGroupProps {
                 LogGroupName = $"/aws/lambda/{appName}Notificaciones/logs",
+                Retention = RetentionDays.ONE_MONTH,
                 RemovalPolicy = RemovalPolicy.DESTROY
             });
 
