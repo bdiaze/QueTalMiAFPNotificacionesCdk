@@ -14,7 +14,7 @@ namespace LambdaNotificacion.Repositories {
         private readonly string _baseUrl = parameterStore.ObtenerParametro(variableEntorno.Obtener("ARN_PARAMETER_API_URL")).Result;
         private readonly string _xApiKey = apiKey.ObtenerApiKey(parameterStore.ObtenerParametro(variableEntorno.Obtener("ARN_PARAMETER_API_KEY_ID")).Result).Result;
 
-        public async Task<DateTime> UltimaFechaTodas() {
+        public async Task<DateOnly> UltimaFechaTodas() {
             using HttpClient client = new(new RetryHandler(new HttpClientHandler()));
             client.DefaultRequestHeaders.Add("x-api-key", _xApiKey);
             HttpResponseMessage response = await client.GetAsync(_baseUrl + "CuotaUfComision/UltimaFechaTodas");
@@ -22,7 +22,7 @@ namespace LambdaNotificacion.Repositories {
                 throw new Exception($"Ocurrió un error al obtener la fecha donde se tiene valor cuota para todas las AFP. StatusCode: {response.StatusCode} - Content: {await response.Content.ReadAsStringAsync()}");
             }
 
-            return DateTime.ParseExact((await response.Content.ReadAsStringAsync()).Replace("\"", ""), "s", CultureInfo.InvariantCulture);
+            return DateOnly.Parse((await response.Content.ReadAsStringAsync()).Replace("\"", ""), CultureInfo.InvariantCulture);
         }
 
         public async Task<List<SalObtenerUltimaCuota>> ObtenerUltimaCuota(string listaAFPs, string listaFondos, string listaFechas, int tipoComision) {

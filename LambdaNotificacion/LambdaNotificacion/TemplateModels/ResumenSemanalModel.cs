@@ -12,7 +12,7 @@ namespace LambdaNotificacion.TemplateModels {
             { "HABITAT", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPHabitat.svg" },
             { "MODELO", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPModelo.svg" },
             { "PLANVITAL", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPPlanvital.svg" },
-            { "PROVIDA", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPProvida.png" },
+            { "PROVIDA", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPProvida.svg" },
             { "UNO", "https://www.quetalmiafp.cl/images/logos_afps/LogoAFPUno.png" },
         };
 

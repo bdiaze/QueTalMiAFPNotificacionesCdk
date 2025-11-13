@@ -31,7 +31,7 @@ namespace LambdaNotificacion.NotificacionBuilders {
             context.PushCulture(cultureInfo);
 
             ResumenSemanalModel model = new() {
-                FechaHasta = await cuotaUfComisionDAO.UltimaFechaTodas()
+                FechaHasta = (await cuotaUfComisionDAO.UltimaFechaTodas()).ToDateTime(TimeOnly.MinValue)
             };
             // Se modifica FechaHasta para que coincida con un domingo...
             model.FechaHasta = model.FechaHasta.Value.AddDays(-1 * (short)model.FechaHasta.Value.DayOfWeek);
@@ -41,13 +41,13 @@ namespace LambdaNotificacion.NotificacionBuilders {
             List<SalObtenerUltimaCuota> valoresCuotaIniciales = await cuotaUfComisionDAO.ObtenerUltimaCuota(
                 AFP,
                 FONDO,
-                model.FechaDesde.Value.AddDays(-1).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                model.FechaDesde.Value.AddDays(-1).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 1
             );
             List<SalObtenerUltimaCuota> valoresCuotaFinales = await cuotaUfComisionDAO.ObtenerUltimaCuota(
                 AFP,
                 FONDO,
-                model.FechaHasta.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                model.FechaHasta.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 1
             );
 
