@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace LambdaNotificacion.Models {
     internal class HermesRetorno {
-        public required string QueueMessageId { get; set; }
+		public required string IdMensaje { get; set; }
     }
 }
